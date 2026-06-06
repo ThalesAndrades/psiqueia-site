@@ -12,13 +12,18 @@
 <meta property="og:url" content="https://psiqueia.com/">
 <link rel="canonical" href="https://psiqueia.com/">
 <link rel="icon" type="image/png" href="icon.png">
-<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
-<link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
-<link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&f[]=switzer@400,500,600&display=swap" rel="stylesheet">
+<link rel="preload" as="font" type="font/woff2" href="fonts/clash-display-600.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="fonts/switzer-400.woff2" crossorigin>
 <script>document.documentElement.classList.add('has-js');</script>
 <style>
+/* fontes self-hosted (Fontshare/ITF Free Font License) + fallbacks métricos anti-CLS */
+@font-face{font-family:'Clash Display';src:url('fonts/clash-display-600.woff2') format('woff2');font-weight:600;font-style:normal;font-display:swap}
+@font-face{font-family:'Switzer';src:url('fonts/switzer-400.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Switzer';src:url('fonts/switzer-500.woff2') format('woff2');font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:'Clash Display Fallback';src:local('Arial');size-adjust:96%;ascent-override:97%;descent-override:23%;line-gap-override:0%}
+@font-face{font-family:'Switzer Fallback';src:local('Arial');size-adjust:99%;ascent-override:98%;descent-override:25%;line-gap-override:0%}
 /* ============ TOKENS ============ */
 :root{
   --color-bg:#0B0E1C;          /* ink profundo */
@@ -30,8 +35,8 @@
   --color-text-25:rgba(236,233,244,.28);
   --color-line:rgba(139,92,246,.16);
   --glow:rgba(139,92,246,.32);
-  --font-display:'Clash Display',ui-sans-serif,system-ui,sans-serif;
-  --font-body:'Switzer',ui-sans-serif,system-ui,sans-serif;
+  --font-display:'Clash Display','Clash Display Fallback',ui-sans-serif,system-ui,sans-serif;
+  --font-body:'Switzer','Switzer Fallback',ui-sans-serif,system-ui,sans-serif;
   --r-l:2em; --r-m:1.25em;
 }
 /* sistema fluido */
@@ -76,12 +81,32 @@ body::before{
   .h1{font-size:11.5em}.h2{font-size:7em}
 }
 
-/* anti-flash: só esconde quando há JS */
-.has-js [data-reveal],.has-js [data-text-split]{opacity:0}
-.has-js.anim-ready [data-reveal],.has-js.anim-ready [data-text-split]{opacity:1}
+/* anti-flash: só esconde quando há JS — NUNCA dentro do hero (LCP) */
+.has-js main section:not(.hero) [data-reveal],
+.has-js main section:not(.hero) [data-text-split]{opacity:0}
+.has-js.anim-ready main section:not(.hero) [data-reveal],
+.has-js.anim-ready main section:not(.hero) [data-text-split]{opacity:1}
+
+/* entrada do hero 100% CSS (zero dependência de JS p/ LCP) */
+@keyframes rise{from{opacity:0;transform:translateY(1.4em)}to{opacity:1;transform:none}}
+.hero [data-reveal],.hero .h1{animation:rise .85s cubic-bezier(.22,.8,.3,1) both}
+.hero .h1{animation-delay:.08s}
+.hero [data-reveal]:nth-of-type(1){animation-delay:0s}
+.hero .hero-sub{animation-delay:.22s}
+.hero .cta-row{animation-delay:.34s}
+.hero .hero-note{animation-delay:.44s}
+.hero .chips{animation-delay:.52s}
+.hero .phone-zone{animation-delay:.3s}
+
 @media(prefers-reduced-motion:reduce){
   .has-js [data-reveal],.has-js [data-text-split]{opacity:1!important;transform:none!important}
+  .hero [data-reveal],.hero .h1{animation:none}
   body::before{animation:none}
+}
+/* mobile: corta custo de paint (grain estático, blur menor) */
+@media(max-width:767px){
+  body::before{animation:none}
+  .hero-bg .mesh{filter:blur(1.2em)}
 }
 
 /* ============ HEADER ============ */
@@ -456,15 +481,10 @@ window.addEventListener('DOMContentLoaded',()=>{
     });
   });
 
-  /* SplitType em todos os marcados */
-  document.querySelectorAll('[data-text-split]').forEach(el=>new SplitType(el,{types:'words',tagName:'span'}));
+  /* SplitType só fora do hero (hero entra via CSS p/ LCP rápido) */
+  document.querySelectorAll('main section:not(.hero) [data-text-split]').forEach(el=>new SplitType(el,{types:'words',tagName:'span'}));
   doc.classList.add('anim-ready');
-  gsap.set('[data-text-split],[data-reveal]',{opacity:1});
-
-  /* Hero: char/word stagger (toca uma vez) */
-  const heroWords=document.querySelectorAll('[data-hero-title] .word');
-  gsap.from(heroWords,{yPercent:110,opacity:0,duration:.9,stagger:.06,ease:'power3.out',delay:.15});
-  gsap.from('.hero [data-reveal]',{y:28,opacity:0,duration:.8,stagger:.09,ease:'power2.out',delay:.45});
+  gsap.set('main section:not(.hero) [data-text-split], main section:not(.hero) [data-reveal]',{opacity:1});
 
   /* Phone: float + parallax sutil */
   const phone=document.querySelector('[data-phone]');
