@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>PsiquêIA — Terapia online com psicólogos verificados e IA de bem-estar</title>
 <meta name="description" content="O PsiquêIA conecta você a psicólogos verificados para sessões por vídeo, com diário emocional inteligente e insights de IA. Lançamento 2026 — em breve na App Store.">
 <meta property="og:title" content="PsiquêIA — Transformando o cuidado em saúde mental">
@@ -70,15 +70,19 @@ body::before{
 }
 
 /* tipografia */
-.h1{font-family:var(--font-display);font-weight:600;font-size:7.6em;line-height:.98;letter-spacing:-.025em}
-.h2{font-family:var(--font-display);font-weight:600;font-size:4.6em;line-height:1.02;letter-spacing:-.018em}
+.h1{font-family:var(--font-display);font-weight:600;font-size:7.6em;line-height:.98;letter-spacing:-.025em;overflow-wrap:break-word}
+.h2{font-family:var(--font-display);font-weight:600;font-size:4.6em;line-height:1.02;letter-spacing:-.018em;overflow-wrap:break-word}
 .h3{font-family:var(--font-display);font-weight:600;font-size:1.55em;line-height:1.15;letter-spacing:-.008em}
 .body-l{font-size:1.35em;line-height:1.5;color:var(--color-text-50)}
 .body-m{font-size:1.05em;line-height:1.6;color:var(--color-text-50)}
 .caption{font-size:.82em;text-transform:uppercase;letter-spacing:.18em;font-weight:600;color:var(--color-accent)}
 .accent{color:var(--color-accent)}
 @media(max-width:767px){
-  .h1{font-size:11.5em}.h2{font-size:7em}
+  .h1{font-size:8em}.h2{font-size:6.2em}
+}
+@media(max-width:479px){
+  .h1{font-size:6em}.h2{font-size:5.2em}
+  .body-l{font-size:1.25em}
 }
 
 /* anti-flash: só esconde quando há JS — NUNCA dentro do hero (LCP) */
@@ -114,21 +118,28 @@ body::before{
   position:fixed;inset:0 0 auto 0;z-index:100;
   mix-blend-mode:difference;color:#fff;
   display:flex;align-items:center;justify-content:space-between;
-  padding:1.6em 4vw;transition:transform .45s cubic-bezier(.4,0,.2,1);
+  padding:calc(1.2em + env(safe-area-inset-top)) max(4vw, env(safe-area-inset-left)) 1.2em;
+  transition:transform .45s cubic-bezier(.4,0,.2,1);
 }
 .site-header.hidden{transform:translateY(-110%)}
 .brand{display:flex;align-items:center;gap:.7em;font-family:var(--font-display);font-weight:600;font-size:1.3em;letter-spacing:-.01em}
 .brand img{width:2em;height:2em;border-radius:.55em}
 .nav{display:flex;gap:2.2em;align-items:center;font-size:.95em;font-weight:500}
-.nav a{opacity:.75;transition:opacity .25s}
+.nav a{opacity:.75;transition:opacity .25s;padding:.6em 0}
 .nav a:hover{opacity:1}
-@media(max-width:767px){.nav a.hide-m{display:none}}
+.nav .nav-cta{display:none}
+@media(max-width:767px){
+  .nav a.hide-m{display:none}
+  .nav{gap:1.2em}
+  .nav .nav-cta{display:inline-flex;align-items:center;opacity:1;border:1px solid rgba(255,255,255,.5);padding:.55em 1.1em;border-radius:10em;font-size:.9em}
+}
 
 /* ============ HERO ============ */
 .hero{
-  position:relative;min-height:100vh;display:flex;flex-direction:column;
+  position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;
   justify-content:center;overflow:clip;padding:10em 0 6em;
 }
+@media(max-width:767px){.hero{padding:9em 0 5em}}
 .hero-bg{position:absolute;inset:0;pointer-events:none}
 .hero-bg .mesh{
   position:absolute;inset:-20%;
@@ -153,6 +164,10 @@ body::before{
 .hero .h1 .word{will-change:transform}
 .hero-sub{margin:2.4em 0 3em;max-width:34em}
 .cta-row{display:flex;gap:1.2em;flex-wrap:wrap;align-items:center}
+@media(max-width:479px){
+  .cta-row{flex-direction:column;align-items:stretch}
+  .cta-row .btn{justify-content:center;padding:1.25em 2.1em}
+}
 .btn{
   position:relative;display:inline-flex;align-items:center;gap:.7em;overflow:hidden;
   font-weight:600;font-size:1em;padding:1.1em 2.1em;border-radius:10em;
@@ -200,11 +215,13 @@ body::before{
 
 /* ============ MANIFESTO ============ */
 .manifesto{min-height:120vh;display:flex;align-items:center;padding:8em 0}
+@media(max-width:767px){.manifesto{min-height:0;padding:7em 0}}
 .manifesto .h2{max-width:18ch}
 .manifesto .word{opacity:.18}
 
 /* ============ FEATURES ============ */
 .features{padding:9em 0}
+@media(max-width:767px){.features{padding:6em 0}.sec-head{margin-bottom:3em}}
 .sec-head{margin-bottom:4.5em;max-width:42em}
 .sec-head .caption{display:inline-flex;align-items:center;gap:.8em;margin-bottom:1.4em}
 .sec-head .caption::before{content:"";width:2.6em;height:1px;background:var(--color-accent)}
@@ -280,6 +297,7 @@ body::before{
 
 /* ============ LAUNCH ============ */
 .launch-sec{padding:10em 0 12em;text-align:center;position:relative;overflow:clip}
+@media(max-width:767px){.launch-sec{padding:6em 0 8em}.counter-row{gap:2.5em;margin:3em 0}}
 .launch-sec .mesh{
   position:absolute;inset:-30% -10%;pointer-events:none;
   background:radial-gradient(40% 45% at 50% 60%,var(--glow),transparent 70%);filter:blur(2em);
@@ -292,7 +310,8 @@ body::before{
 .counter small{font-size:.85em;color:var(--color-text-50);letter-spacing:.06em}
 
 /* ============ FOOTER ============ */
-footer{background:var(--color-bg-deep);border-top:1px solid var(--color-line);padding:4.5em 0 3em;color:var(--color-text-50)}
+footer{background:var(--color-bg-deep);border-top:1px solid var(--color-line);padding:4.5em 0 calc(3em + env(safe-area-inset-bottom));color:var(--color-text-50)}
+@media(max-width:767px){.f-in{flex-direction:column;align-items:flex-start;gap:1.6em}.f-links{flex-direction:column;gap:1.1em}.f-links a{padding:.2em 0}}
 .f-in{display:flex;gap:2.5em;flex-wrap:wrap;align-items:center;justify-content:space-between}
 .f-brand{display:flex;align-items:center;gap:.7em;color:var(--color-text);font-family:var(--font-display);font-weight:600;font-size:1.15em}
 .f-brand img{width:2em;height:2em;border-radius:.5em}
@@ -311,6 +330,7 @@ footer{background:var(--color-bg-deep);border-top:1px solid var(--color-line);pa
     <a class="hide-m" href="#como-funciona">Como funciona</a>
     <a class="hide-m" href="#psicologos">Para psicólogos</a>
     <a href="suporte.html">Suporte</a>
+    <a class="nav-cta" href="#lancamento">&#63743; App Store</a>
   </nav>
 </header>
 
